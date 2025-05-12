@@ -1,0 +1,11 @@
+<div class="container">
+  <h2>Recent Posts</h2>
+  <div class="sort-options">
+    <button (click)="sortPosts('newest')">Newest</button>
+    <button (click)="sortPosts('most-liked')">Most Liked</button>
+    <button (click)="sortPosts('most-commented')">Most Commented</button>
+  </div>
+  <app-post *ngFor="let post of recentPosts" [post]="post"></app-post>
+  <h2>Popular Posts</h2>
+  <app-post *ngFor="let post of popularPosts" [post]="post"></app-post>
+</div>
