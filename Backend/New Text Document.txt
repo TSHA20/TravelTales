@@ -1,0 +1,485 @@
+```zip
+TravelTales/
+├── server/
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── postController.js
+│   │   ├── followController.js
+│   │   ├── likeController.js
+│   │   └── countryController.js
+│   ├── models/
+│   │   ├── user.js
+│   │   ├── post.js
+│   │   ├── follow.js
+│   │   └── like.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   ├── posts.js
+│   │   ├── follows.js
+│   │   ├── likes.js
+│   │   └── countries.js
+│   ├── middleware/
+│   │   └── auth.js
+│   ├── .env
+│   ├── index.js
+│   └── package.json
+├── database/
+│   └── traveltales.db
+├── Dockerfile
+└── .gitignore
+```
+
+### File Contents
+
+#### `server/index.js`
+```javascript
+const express = require('express');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const authRoutes = require('./routes/auth');
+const postRoutes = require('./routes/posts');
+const followRoutes = require('./routes/follows');
+const likeRoutes = require('./routes/likes');
+const countryRoutes = require('./routes/countries');
+
+const app = express();
+
+// Security middleware
+app.use(helmet());
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 })); // 100 requests per 15 min
+app.use(express.json());
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/follows', followRoutes);
+app.use('/api/likes', likeRoutes);
+app.use('/api/countries', countryRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+```
+
+#### `server/config/db.js`
+```javascript
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./database/traveltales.db');
+
+db.serialize(() => {
+    db.run(`
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE,
+            password TEXT,
+            username TEXT UNIQUE
+        )
+    `);
+    db.run(`
+        CREATE TABLE IF NOT EXISTS posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT,
+            content TEXT,
+            country TEXT,
+            visit_date DATE,
+            user_id INTEGER,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+    `);
+    db.run(`
+        CREATE TABLE IF NOT EXISTS follows (
+            follower_id INTEGER,
+            followed_id INTEGER,
+            FOREIGN KEY(follower_id) REFERENCES users(id),
+            FOREIGN KEY(followed_id) REFERENCES users(id),
+            PRIMARY KEY(follower_id, followed_id)
+        )
+    `);
+    db.run(`
+        CREATE TABLE IF NOT EXISTS likes (
+            post_id INTEGER,
+            user_id INTEGER,
+            value INTEGER,
+            FOREIGN KEY(post_id) REFERENCES posts(id),
+            FOREIGN KEY(user_id) REFERENCES users(id),
+            PRIMARY KEY(post_id, user_id)
+        )
+    `);
+});
+
+module.exports = db;
+```
+
+#### `server/middleware/auth.js`
+```javascript
+const jwt = require('jsonwebtoken');
+
+const auth = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) return res.status(401).json({ error: 'No token provided' });
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        res.status(401).json({ error: 'Invalid token' });
+    }
+};
+
+module.exports = auth;
+```
+
+#### `server/controllers/authController.js`
+```javascript
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const db = require('../config/db');
+const validator = require('validator');
+
+exports.register = async (req, res) => {
+    const { email, password, username } = req.body;
+    if (!validator.isEmail(email) || !validator.isLength(password, { min: 6 }) || !username) {
+        return res.status(400).json({ error: 'Invalid input' });
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        db.run(
+            'INSERT INTO users (email, password, username) VALUES (?, ?, ?)',
+            [email, hashedPassword, username],
+            function (err) {
+                if (err) return res.status(400).json({ error: 'Email or username already exists' });
+                const token = jwt.sign({ id: this.lastID, email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+                res.status(201).json({ token });
+            }
+        );
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
+exports.login = async (req, res) => {
+    const { email, password } = req.body;
+    if (!validator.isEmail(email)) return res.status(400).json({ error: 'Invalid email' });
+
+    db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
+        if (err || !user) return res.status(400).json({ error: 'Invalid credentials' });
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
+
+        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.json({ token });
+    });
+};
+```
+
+#### `server/controllers/postController.js`
+```javascript
+const db = require('../config/db');
+const validator = require('validator');
+
+exports.createPost = (req, res) => {
+    const { title, content, country, visit_date } = req.body;
+    if (!title || !content || !country || !visit_date || !validator.isDate(visit_date)) {
+        return res.status(400).json({ error: 'Invalid input' });
+    }
+
+    db.run(
+        'INSERT INTO posts (title, content, country, visit_date, user_id) VALUES (?, ?, ?, ?, ?)',
+        [title, content, country, visit_date, req.user.id],
+        function (err) {
+            if (err) return res.status(500).json({ error: 'Failed to create post' });
+            res.status(201).json({ id: this.lastID });
+        }
+    );
+};
+
+exports.getPosts = (req, res) => {
+    const { country, username, page = 1, limit = 10 } = req.query;
+    const offset = (page - 1) * limit;
+    let query = 'SELECT p.*, u.username FROM posts p JOIN users u ON p.user_id = u.id';
+    let params = [];
+
+    if (country) {
+        query += ' WHERE p.country = ?';
+        params.push(country);
+    } else if (username) {
+        query += ' WHERE u.username = ?';
+        params.push(username);
+    }
+
+    query += ' LIMIT ? OFFSET ?';
+    params.push(parseInt(limit), parseInt(offset));
+
+    db.all(query, params, (err, posts) => {
+        if (err) return res.status(500).json({ error: 'Failed to fetch posts' });
+        res.json(posts);
+    });
+};
+
+exports.updatePost = (req, res) => {
+    const { id } = req.params;
+    const { title, content, country, visit_date } = req.body;
+
+    db.get('SELECT user_id FROM posts WHERE id = ?', [id], (err, post) => {
+        if (err || !post) return res.status(404).json({ error: 'Post not found' });
+        if (post.user_id !== req.user.id) return res.status(403).json({ error: 'Unauthorized' });
+
+        db.run(
+            'UPDATE posts SET title = ?, content = ?, country = ?, visit_date = ? WHERE id = ?',
+            [title, content, country, visit_date, id],
+            (err) => {
+                if (err) return res.status(500).json({ error: 'Failed to update post' });
+                res.json({ message: 'Post updated' });
+            }
+        );
+    });
+};
+
+exports.deletePost = (req, res) => {
+    const { id } = req.params;
+
+    db.get('SELECT user_id FROM posts WHERE id = ?', [id], (err, post) => {
+        if (err || !post) return res.status(404).json({ error: 'Post not found' });
+        if (post.user_id !== req.user.id) return res.status(403).json({ error: 'Unauthorized' });
+
+        db.run('DELETE FROM posts WHERE id = ?', [id], (err) => {
+            if (err) return res.status(500).json({ error: 'Failed to delete post' });
+            res.json({ message: 'Post deleted' });
+        });
+    });
+};
+```
+
+#### `server/controllers/followController.js`
+```javascript
+const db = require('../config/db');
+
+exports.follow = (req, res) => {
+    const { followed_id } = req.body;
+    if (followed_id === req.user.id) return res.status(400).json({ error: 'Cannot follow yourself' });
+
+    db.run(
+        'INSERT INTO follows (follower_id, followed_id) VALUES (?, ?)',
+        [req.user.id, followed_id],
+        (err) => {
+            if (err) return res.status(400).json({ error: 'Already following or user not found' });
+            res.json({ message: 'Followed' });
+        }
+    );
+};
+
+exports.unfollow = (req, res) => {
+    const { followed_id } = req.body;
+
+    db.run(
+        'DELETE FROM follows WHERE follower_id = ? AND followed_id = ?',
+        [req.user.id, followed_id],
+        (err) => {
+            if (err) return res.status(500).json({ error: 'Failed to unfollow' });
+            res.json({ message: 'Unfollowed' });
+        }
+    );
+};
+
+exports.getFeed = (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+    const offset = (page - 1) * limit;
+
+    db.all(
+        `SELECT p.*, u.username 
+         FROM posts p 
+         JOIN users u ON p.user_id = u.id 
+         WHERE p.user_id IN (SELECT followed_id FROM follows WHERE follower_id = ?) 
+         LIMIT ? OFFSET ?`,
+        [req.user.id, parseInt(limit), parseInt(offset)],
+        (err, posts) => {
+            if (err) return res.status(500).json({ error: 'Failed to fetch feed' });
+            res.json(posts);
+        }
+    );
+};
+```
+
+#### `server/controllers/likeController.js`
+```javascript
+const db = require('../config/db');
+
+exports.likePost = (req, res) => {
+    const { post_id, value } = req.body;
+    if (![1, -1].includes(value)) return res.status(400).json({ error: 'Invalid like value' });
+
+    db.run(
+        'INSERT OR REPLACE INTO likes (post_id, user_id, value) VALUES (?, ?, ?)',
+        [post_id, req.user.id, value],
+        (err) => {
+            if (err) return res.status(500).json({ error: 'Failed to like post' });
+            res.json({ message: 'Like updated' });
+        }
+    );
+};
+
+exports.getLikes = (req, res) => {
+    const { post_id } = req.params;
+    db.all(
+        'SELECT value, COUNT(*) as count FROM likes WHERE post_id = ? GROUP BY value',
+        [post_id],
+        (err, results) => {
+            if (err) return res.status(500).json({ error: 'Failed to fetch likes' });
+            const likes = results.find(r => r.value === 1)?.count || 0;
+            const dislikes = results.find(r => r.value === -1)?.count || 0;
+            res.json({ likes, dislikes });
+        }
+    );
+};
+```
+
+#### `server/controllers/countryController.js`
+```javascript
+const axios = require('axios');
+
+exports.getCountries = async (req, res) => {
+    try {
+        const response = await axios.get('https://restcountries.com/v3.1/all');
+        const countries = response.data.map(country => ({
+            name: country.name.common,
+            flag: country.flags.png,
+            currency: Object.values(country.currencies || {})[0]?.name || 'N/A',
+            capital: country.capital?.[0] || 'N/A'
+        }));
+        res.json(countries);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch countries' });
+    }
+};
+
+exports.getCountry = async (req, res) => {
+    const { name } = req.params;
+    try {
+        const response = await axios.get(`https://restcountries.com/v3.1/name/${name}`);
+        const country = response.data[0];
+        res.json({
+            name: country.name.common,
+            flag: country.flags.png,
+            currency: Object.values(country.currencies || {})[0]?.name || 'N/A',
+            capital: country.capital?.[0] || 'N/A'
+        });
+    } catch (error) {
+        res.status(404).json({ error: 'Country not found' });
+    }
+};
+```
+
+#### `server/routes/auth.js`
+```javascript
+const express = require('express');
+const router = express.Router();
+const authController = require('../controllers/authController');
+
+router.post('/register', authController.register);
+router.post('/login', authController.login);
+
+module.exports = router;
+```
+
+#### `server/routes/posts.js`
+```javascript
+const express = require('express');
+const router = express.Router();
+const postController = require('../controllers/postController');
+const auth = require('../middleware/auth');
+
+router.post('/', auth, postController.createPost);
+router.get('/', postController.getPosts);
+router.put('/:id', auth, postController.updatePost);
+router.delete('/:id', auth, postController.deletePost);
+
+module.exports = router;
+```
+
+#### `server/routes/follows.js`
+```javascript
+const express = require('express');
+const router = express.Router();
+const followController = require('../controllers/followController');
+const auth = require('../middleware/auth');
+
+router.post('/', auth, followController.follow);
+router.delete('/', auth, followController.unfollow);
+router.get('/feed', auth, followController.getFeed);
+
+module.exports = router;
+```
+
+#### `server/routes/likes.js`
+```javascript
+const express = require('express');
+const router = express.Router();
+const likeController = require('../controllers/likeController');
+const auth = require('../middleware/auth');
+
+router.post('/', auth, likeController.likePost);
+router.get('/:post_id', likeController.getLikes);
+
+module.exports = router;
+```
+
+#### `server/routes/countries.js`
+```javascript
+const express = require('express');
+const router = express.Router();
+const countryController = require('../controllers/countryController');
+
+router.get('/', countryController.getCountries);
+router.get('/:name', countryController.getCountry);
+
+module.exports = router;
+```
+
+#### `server/.env`
+```
+PORT=3000
+JWT_SECRET=your_jwt_secret_key
+```
+
+#### `server/package.json`
+```json
+{
+    "name": "traveltales-backend",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "axios": "^1.6.8",
+        "bcrypt": "^5.1.1",
+        "express": "^4.18.2",
+        "express-rate-limit": "^7.2.0",
+        "helmet": "^7.1.0",
+        "jsonwebtoken": "^9.0.2",
+        "sqlite3": "^5.1.7",
+        "validator": "^13.11.0"
+    }
+}
+```
+
+#### `Dockerfile`
+```dockerfile
+FROM node:18
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+#### `.gitignore`
+```
+node_modules/
+database/traveltales.db
+.env
+```
