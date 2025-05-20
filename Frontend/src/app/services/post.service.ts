@@ -11,13 +11,25 @@ export class PostService {
 
   constructor(private http: HttpClient) {}
 
-  getRecentPosts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/recent`);
+  getAllPosts(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/posts`);
   }
 
-  getPopularPosts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/popular`);
+  getPosts(country?: string, username?: string): Observable<any[]> {
+    let url = this.apiUrl;
+    const params: any = {};
+    if (country) params.country = country;
+    if (username) params.username = username;
+    return this.http.get<any[]>(url, { params });
   }
+
+  // getRecentPosts(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.apiUrl}/recent`);
+  // }
+  //
+  // getPopularPosts(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.apiUrl}/popular`);
+  // }
 
   getSortedPosts(criteria: 'newest' | 'most-liked' | 'most-commented'): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/sorted?criteria=${criteria}`);
