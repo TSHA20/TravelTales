@@ -1,0 +1,30 @@
+.post-card {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.post-card img {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.post-card h3 {
+  margin: 10px 0 5px;
+  font-size: 18px;
+}
+
+.post-card p {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.post-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #888;
+}
