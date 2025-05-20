@@ -14,4 +14,14 @@ export class PostComponent {
   getImageUrl(post: any): string {
     return post.imageUrl || 'assets/default-post.jpg';
   }
+
+  likePost(postId: number): void {
+    console.log(`Liked post with ID: ${postId}`);
+    // TODO: Call a like API or update post.likes
+  }
+
+  commentOnPost(postId: number): void {
+    console.log(`Comment on post with ID: ${postId}`);
+    // TODO: Navigate to comment section or open modal
+  }
 }

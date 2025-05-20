@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
 import { PostService } from '../../services/post.service';
 import { CommonModule } from '@angular/common';
 import { PostComponent } from '../../components/post/post.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  imports: [CommonModule, HttpClientModule, PostComponent]
+  imports: [CommonModule, PostComponent]
 })
 export class HomeComponent implements OnInit {
   recentPosts: any[] = [];
   popularPosts: any[] = [];
+  allPosts: any[] = [];
 
   constructor(private postService: PostService) {}
 
@@ -22,32 +23,41 @@ export class HomeComponent implements OnInit {
   }
 
   loadPosts(): void {
-    this.postService.getRecentPosts().subscribe({
-      next: (data) => {
-        this.recentPosts = data;
+    this.postService.getPosts().subscribe({
+      next: (data: any[]) => {
+        // Map posts to include default likes and comments
+        this.allPosts = data.map(post => ({
+          ...post,
+          likes: post.likes || 0,
+          comments: post.comments || 0
+        }));
+
+        // Recent posts latest posts ordered by created at
+        this.recentPosts = [...this.allPosts];
+
+        // Popular posts sort by likes and take top 5
+        this.popularPosts = [...this.allPosts]
+          .sort((a, b) => b.likes - a.likes)
+          .slice(0, 5);
       },
-      error: (err) => {
-        console.error('Error fetching recent posts:', err);
-      }
-    });
-    this.postService.getPopularPosts().subscribe({
-      next: (data) => {
-        this.popularPosts = data;
-      },
-      error: (err) => {
-        console.error('Error fetching popular posts:', err);
+      error: (err: any) => {
+        console.error('Error fetching posts:', err);
+        this.recentPosts = [];
+        this.popularPosts = [];
+        this.allPosts = [];
       }
     });
   }
 
   sortPosts(criteria: 'newest' | 'most-liked' | 'most-commented'): void {
-    this.postService.getSortedPosts(criteria).subscribe({
-      next: (data) => {
-        this.recentPosts = data;
-      },
-      error: (err) => {
-        console.error('Error sorting posts:', err);
-      }
-    });
+    // Sorting until backend supports /sorted
+    let sortedPosts = [...this.allPosts];
+    if (criteria === 'newest') {
+      this.recentPosts = sortedPosts;
+    } else if (criteria === 'most-liked') {
+      this.recentPosts = sortedPosts.sort((a, b) => b.likes - a.likes);
+    } else if (criteria === 'most-commented') {
+      this.recentPosts = sortedPosts.sort((a, b) => b.comments - a.comments);
+    }
   }
 }
