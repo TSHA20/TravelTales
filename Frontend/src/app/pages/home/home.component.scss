@@ -1,0 +1,154 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Color Theme Definitions */
+$primary-text: #274B59; // Deep teal
+$secondary-text: #3F6973; // Muted teal
+$accent-bg: #A3A9B0; // Light gray
+$background: #3F6973; // Muted teal (page background)
+$main-feed: #EBECED; // Light gray (feed background)
+$accent-text: #59290C; // Dark brown
+
+/* Layout */
+.homepage-layout {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 40px;
+  background-color: $background;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Left + Right Sidebars */
+.left-sidebar,
+.right-sidebar {
+  width: 20%;
+  background-color: $accent-bg;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.03);
+}
+
+/* Center Feed */
+.main-feed {
+  width: 55%;
+  padding: 25px;
+  background-color: $main-feed;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.04);
+  min-height: 100vh;
+}
+
+/* Navigation Links */
+.nav-links {
+  list-style: none;
+}
+
+.nav-links li {
+  margin-bottom: 16px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: $primary-text;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: $accent-text;
+}
+
+/* Section Titles */
+.sort-section h2,
+.popular-section h2,
+.post-list h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: $primary-text;
+  text-align: center;
+}
+
+/* Sort Buttons */
+.sort-options {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.sort-options button {
+  padding: 6px 14px;
+  border: 1px solid rgba($primary-text, 0.3);
+  border-radius: 6px;
+  background-color: $background;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border 0.2s ease;
+}
+
+.sort-options button:hover {
+  background-color: rgba($accent-bg, 0.5);
+  border-color: $secondary-text;
+}
+
+/* Post List Container */
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+/* User Card */
+.user-card {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.user-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.user-card p {
+  font-size: 14px;
+  color: $secondary-text;
+}
+
+/* Suggestions */
+.suggestions h4 {
+  font-size: 15px;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba($primary-text, 0.2);
+  color: $primary-text;
+}
+
+/* Footer */
+footer {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 12px;
+  color: $secondary-text;
+}
+
+/* Optional Responsive Enhancement */
+@media screen and (max-width: 1024px) {
+  .homepage-layout {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .left-sidebar,
+  .right-sidebar,
+  .main-feed {
+    width: 100%;
+  }
+}
