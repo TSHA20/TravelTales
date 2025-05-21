@@ -1,11 +1,9 @@
-/* Global Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Color Theme Definitions */
 $primary-text: #274B59; // Deep teal
 $secondary-text: #3F6973; // Muted teal
 $accent-bg: #A3A9B0; // Light gray
@@ -22,7 +20,6 @@ $accent-text: #59290C; // Dark brown
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* Left + Right Sidebars */
 .left-sidebar,
 .right-sidebar {
   width: 20%;
@@ -32,7 +29,6 @@ $accent-text: #59290C; // Dark brown
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.03);
 }
 
-/* Center Feed */
 .main-feed {
   width: 55%;
   padding: 25px;
@@ -42,7 +38,6 @@ $accent-text: #59290C; // Dark brown
   min-height: 100vh;
 }
 
-/* Navigation Links */
 .nav-links {
   list-style: none;
 }
@@ -62,7 +57,6 @@ $accent-text: #59290C; // Dark brown
   color: $accent-text;
 }
 
-/* Section Titles */
 .sort-section h2,
 .popular-section h2,
 .post-list h2 {
@@ -73,7 +67,6 @@ $accent-text: #59290C; // Dark brown
   text-align: center;
 }
 
-/* Sort Buttons */
 .sort-options {
   margin-bottom: 30px;
   display: flex;
@@ -96,7 +89,6 @@ $accent-text: #59290C; // Dark brown
   border-color: $secondary-text;
 }
 
-/* Post List Container */
 .post-list {
   display: flex;
   flex-direction: column;
@@ -104,7 +96,7 @@ $accent-text: #59290C; // Dark brown
   margin-bottom: 30px;
 }
 
-/* User Card */
+
 .user-card {
   text-align: center;
   margin-bottom: 30px;
@@ -122,7 +114,6 @@ $accent-text: #59290C; // Dark brown
   color: $secondary-text;
 }
 
-/* Suggestions */
 .suggestions h4 {
   font-size: 15px;
   margin-bottom: 10px;
@@ -131,7 +122,6 @@ $accent-text: #59290C; // Dark brown
   color: $primary-text;
 }
 
-/* Footer */
 footer {
   margin-top: 40px;
   text-align: center;
@@ -139,7 +129,6 @@ footer {
   color: $secondary-text;
 }
 
-/* Optional Responsive Enhancement */
 @media screen and (max-width: 1024px) {
   .homepage-layout {
     flex-direction: column;

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { environment } from '../../environment/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +12,28 @@ export class CountryService {
 
   constructor(private http: HttpClient) {}
 
-  getCountries(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  getCountries(): Observable<any[]> {
+    if (this.countriesCache) {
+      return of(this.countriesCache);
+    }
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      tap((data: any[]) => {
+        this.countriesCache = data;
+      })
+    );
   }
 
   getCountryDetails(name: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${name}`);
+    if (this.countriesCache) {
+      const country = this.countriesCache.find(c => c.name === name);
+      return of(country || null);
+    }
+    return this.http.get<any>(`${this.apiUrl}/${name}`);
   }
+
+  clearCache(): void {
+    this.countriesCache = null;
+  }
+
+  private countriesCache: any[] | null = null;
 }

@@ -9,7 +9,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './pages/home/home.component';
 import { PostComponent } from './components/post/post.component';
-import { CountryDropdownComponent } from './components/country-dropdown/country-dropdown.component';
+import { CountryDropdownComponent } from './components/country-dropdown/country.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
