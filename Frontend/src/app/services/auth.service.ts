@@ -21,6 +21,7 @@ export class AuthService {
 
   getProfile(): Observable<any> {
     const token = localStorage.getItem('token');
+    console.log('Sending token:', token);
     return this.http.get(`${this.apiUrl}/profile`, {
       headers: { Authorization: `Bearer ${token}` }
     });

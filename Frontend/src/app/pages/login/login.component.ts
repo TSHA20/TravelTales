@@ -19,6 +19,7 @@ export class LoginComponent {
   login() {
     this.authService.login(this.credentials.email, this.credentials.password).subscribe({
       next: (res) => {
+        console.log('Login response:', res);
         localStorage.setItem('token', res.token);
         this.router.navigate(['/feed']);
       },

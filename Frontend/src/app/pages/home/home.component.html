@@ -1,5 +1,4 @@
 <div class="homepage-layout">
-  <!-- Left Sidebar -->
   <aside class="left-sidebar">
     <ul class="nav-links">
       <li><a routerLink="/home">Home</a></li>
@@ -14,7 +13,6 @@
     </ul>
   </aside>
 
-  <!-- Center Feed -->
   <main class="main-feed">
     <section class="post-list">
       <h2>Recent Posts</h2>
@@ -38,16 +36,14 @@
     </section>
   </main>
 
-  <!-- Right Sidebar -->
   <aside class="right-sidebar">
     <div class="user-card">
-      <img src="src/assets/user.jpeg" alt="User" />
-      <p><strong>Logged in as:</strong> your_username</p>
+      <img src="assets/user.jpeg" alt="User" />
+      <p><strong>Logged in as:</strong> {{ username }}</p>
     </div>
 
     <div class="suggestions">
       <h4>Suggested for you</h4>
-      <!-- Suggestion items go here -->
     </div>
 
     <footer>
