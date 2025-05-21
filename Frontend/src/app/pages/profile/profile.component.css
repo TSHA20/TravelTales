@@ -1,0 +1,95 @@
+:host {
+  display: block;
+  background-color: #3F6973;
+  min-height: 100vh;
+  padding: 20px;
+  color: #274B59;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background-color: #EBECED;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #59290C;
+}
+
+.profile-info h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #274B59;
+}
+
+.profile-info p {
+  margin: 4px 0;
+  color: #3F6973;
+  font-size: 14px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #A3A9B0;
+  margin: 20px 0;
+}
+
+.post-item {
+  background-color: #EBECED;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+  transition: transform 0.2s ease;
+}
+
+.post-item:hover {
+  transform: scale(1.02);
+}
+
+.post-item img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.post-meta {
+  padding: 20px;
+  text-align: center;
+}
+
+.post-meta h3 {
+  margin: 0 0 10px;
+  font-size: 24px;
+  color: #274B59;
+  font-weight: bold;
+}
+
+.post-meta p {
+  font-size: 16px;
+  color: #3F6973;
+  margin-bottom: 10px;
+}
+
+.post-meta small {
+  font-size: 14px;
+  color: #777;
+}
+
+.no-posts-message {
+  margin-top: 40px;
+  text-align: center;
+  color: #A3A9B0;
+  font-style: italic;
+}
