@@ -1,9 +1,0 @@
-<select (change)="onCountrySelect($event.target.value)">
-  <option value="">Select a country</option>
-  <option *ngFor="let country of countries" [value]="country.name.common">{{ country.name.common }}</option>
-</select>
-<div *ngIf="selectedCountry">
-  <img [src]="selectedCountry.flags.png" alt="{{ selectedCountry.name.common }} flag" width="50" />
-  <p>Capital: {{ selectedCountry.capital[0] }}</p>
-  <p>Currency: {{ selectedCountry.currencies | keyvalue | firstCurrency }}</p>
-</div>

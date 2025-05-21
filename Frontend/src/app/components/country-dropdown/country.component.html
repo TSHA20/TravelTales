@@ -1,0 +1,32 @@
+<div>
+  <div class="video-background">
+    <video #bgVideo autoplay muted loop class="bg-video">
+      <source [src]="currentVideo" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="countries-container">
+    <h2>Explore Countries</h2>
+    <p class="description">Get to know about countries and explore their rich cultures, capitals, currencies, and languages!</p>
+    <div class="country-select">
+      <label for="countryDropdown">Select a Country:</label>
+      <select id="countryDropdown" (change)="onCountrySelect($event)" [disabled]="isLoading">
+        <option value="">-- Select a Country --</option>
+        <option *ngFor="let country of countries" [value]="country.name">
+          {{ country.name }}
+        </option>
+      </select>
+    </div>
+    <div class="loading" *ngIf="isLoading">
+      <p>Loading...</p>
+    </div>
+    <div class="country-details" *ngIf="selectedCountry && !isLoading">
+      <img [src]="selectedFlag" alt="Country Flag" class="flag-image" />
+      <p><strong>Capital:</strong> {{ selectedCapital }}</p>
+      <p><strong>Currency:</strong> {{ selectedCurrency.name }} ({{ selectedCurrency.code }}, {{ selectedCurrency.symbol }})</p>
+      <p><strong>Languages:</strong> {{ selectedLanguages.join(', ') }}</p>
+    </div>
+  </div>
+
+</div>
