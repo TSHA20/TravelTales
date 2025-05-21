@@ -7,6 +7,7 @@ const path = require('path');
 const userRoutes = require('./routes/user.routes');
 const postRoutes = require('./routes/post.routes');
 let countryRoutes;
+const cookieParser = require('cookie-parser');
 
 try {
   countryRoutes = require('./routes/country.routes');
@@ -19,8 +20,14 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
+
+app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:4200', // exact frontend origin
+  credentials: true                // allow cookies (for JWT)
+}));
 
 // Database setup
 const dbPath = path.join(__dirname, '../database/traveltales.db');
