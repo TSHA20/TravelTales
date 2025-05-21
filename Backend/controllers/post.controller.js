@@ -145,3 +145,39 @@ exports.getPostsByUser = (req, res) => {
     res.json(posts);
   });
 };
+
+exports.getMyPosts = (req, res) => {
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized: no user ID' });
+  }
+
+  console.log('[getMyPosts] Authenticated user ID:', userId);
+
+  const query = `
+    SELECT 
+      p.*, 
+      u.username,
+      (
+        SELECT COUNT(*) 
+        FROM likes 
+        WHERE post_id = p.id AND is_like = 1
+      ) AS likes
+    FROM posts p
+    JOIN users u ON p.user_id = u.id
+    WHERE p.user_id = ?
+    ORDER BY p.created_at DESC;
+  `;
+
+  db.all(query, [userId], (err, posts) => {
+    if (err) {
+      console.error('[getMyPosts] DB error:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    console.log(`[getMyPosts] ${posts.length} post(s) found for user ${userId}`);
+    res.status(200).json(posts);
+  });
+};
+
