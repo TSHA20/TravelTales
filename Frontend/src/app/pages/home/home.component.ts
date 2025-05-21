@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { PostService } from '../../services/post.service';
 import { CommonModule } from '@angular/common';
 import { PostComponent } from '../../components/post/post.component';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -16,26 +17,42 @@ export class HomeComponent implements OnInit {
   popularPosts: any[] = [];
   allPosts: any[] = [];
 
-  constructor(private postService: PostService) {}
+  @Input() user: any;
+  username: string = '';
+
+  constructor(
+    private postService: PostService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
+    this.loadUser();
     this.loadPosts();
+  }
+
+  loadUser(): void {
+    this.http.get<{ username: string }>('http://localhost:3000/api/auth/me', { withCredentials: true })
+      .subscribe({
+        next: (data) => {
+          this.username = data.username;
+        },
+        error: (err) => {
+          console.error('Failed to load user info', err);
+        }
+      });
   }
 
   loadPosts(): void {
     this.postService.getPosts().subscribe({
       next: (data: any[]) => {
-        // Map posts to include default likes and comments
         this.allPosts = data.map(post => ({
           ...post,
           likes: post.likes || 0,
           comments: post.comments || 0
         }));
 
-        // Recent posts latest posts ordered by created at
         this.recentPosts = [...this.allPosts];
 
-        // Popular posts sort by likes and take top 5
         this.popularPosts = [...this.allPosts]
           .sort((a, b) => b.likes - a.likes)
           .slice(0, 5);
@@ -50,7 +67,6 @@ export class HomeComponent implements OnInit {
   }
 
   sortPosts(criteria: 'newest' | 'most-liked' | 'most-commented'): void {
-    // Sorting until backend supports /sorted
     let sortedPosts = [...this.allPosts];
     if (criteria === 'newest') {
       this.recentPosts = sortedPosts;

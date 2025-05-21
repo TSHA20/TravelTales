@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PostService } from '../../services/post.service';
 
 @Component({
   selector: 'app-post',
@@ -11,13 +12,24 @@ import { CommonModule } from '@angular/common';
 export class PostComponent {
   @Input() post: any;
 
+  private postService = inject(PostService);
+
   getImageUrl(post: any): string {
-    return post.imageUrl || 'assets/default-post.jpg';
+    return post.imageUrl || 'assets/colombo.webp';
   }
 
   likePost(postId: number): void {
-    console.log(`Liked post with ID: ${postId}`);
-    // TODO: Call a like API or update post.likes
+    this.postService.likePost(postId).subscribe({
+      next: () => {
+        console.log(`Liked post with ID: ${postId}`);
+        if (this.post && this.post.id === postId) {
+          this.post.likes = (this.post.likes || 0) + 1;
+        }
+      },
+      error: (err) => {
+        console.error('Error liking post:', err);
+      }
+    });
   }
 
   commentOnPost(postId: number): void {
