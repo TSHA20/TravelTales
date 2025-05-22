@@ -1,44 +1,37 @@
 <div class="homepage-layout">
   <aside class="left-sidebar">
     <ul class="nav-links">
-      <li><a routerLink="/home">Home</a></li>
       <li><a routerLink="/search">Search</a></li>
-      <li><a routerLink="/explore">Explore</a></li>
-      <li><a routerLink="/reels">Reels</a></li>
-      <li><a routerLink="/messages">Messages</a></li>
-      <li><a routerLink="/notifications">Notifications</a></li>
       <li><a routerLink="/create">Create</a></li>
       <li><a routerLink="/profile">Profile</a></li>
-      <li><a routerLink="/more">More</a></li>
     </ul>
   </aside>
 
   <main class="main-feed">
+      <section class="sort-section">
+          <h2>Sort Posts By:</h2>
+          <div class="sort-options">
+              <button (click)="sortPosts('newest')">Newest</button>
+              <button (click)="sortPosts('most-liked')">Most Liked</button>
+              <button (click)="sortPosts('most-commented')">Most Commented</button>
+          </div>
+      </section>
     <section class="post-list">
       <h2>Recent Posts</h2>
       <app-post *ngFor="let post of recentPosts" [post]="post"></app-post>
     </section>
-
+      <hr>
     <section class="popular-section">
       <h2>Popular Posts</h2>
       <div class="post-list">
         <app-post *ngFor="let post of popularPosts" [post]="post"></app-post>
       </div>
     </section>
-
-    <section class="sort-section">
-      <h2>Sort Posts By:</h2>
-      <div class="sort-options">
-        <button (click)="sortPosts('newest')">Newest</button>
-        <button (click)="sortPosts('most-liked')">Most Liked</button>
-        <button (click)="sortPosts('most-commented')">Most Commented</button>
-      </div>
-    </section>
   </main>
 
   <aside class="right-sidebar">
     <div class="user-card">
-      <img src="assets/user.jpeg" alt="User" />
+      <img src="assets/user.jpg" alt="User" />
       <p><strong>Logged in as:</strong> {{ username }}</p>
     </div>
 

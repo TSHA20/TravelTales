@@ -1,29 +1,42 @@
 <div>
-  <div class="profile-header">
-    <img src="assets/user.jpeg" class="avatar" alt="User avatar" />
-    <div class="profile-info">
-      <h2>{{ user.username }}</h2>
-      <p>{{ user.email }}</p>
-      <p><strong>{{ posts.length }}</strong> posts</p>
+    <div class="profile-header">
+        <img src="assets/user.jpg" class="avatar" alt="User avatar" />
+        <div class="profile-info">
+            <h2>{{ user.username }}</h2>
+            <p>{{ user.email }}</p>
+            <p><strong>{{ posts.length }}</strong> posts</p>
+        </div>
     </div>
-  </div>
 
-  <hr>
+    <div class="action-buttons">
+        <button class="create-post-btn" routerLink="/create">Create New Post</button>
 
-  <div *ngIf="posts.length > 0; else noPosts">
-    <div class="post-item" *ngFor="let post of posts">
-      <img [src]="post.imageUrl || 'assets/colombo.webp'" alt="Post Image" />
-      <div class="post-meta">
-        <h3>{{ post.title }}</h3>
-        <p>{{ post.content }}</p>
-        <small>Visited: {{ post.country_name }} on {{ post.visit_date }}</small>
-      </div>
+        <div class="delete-post-wrapper">
+            <select [(ngModel)]="selectedPostId" class="post-select">
+                <option value="">-- Select Post to Delete --</option>
+                <option *ngFor="let post of posts" [value]="post.id">{{ post.title }}</option>
+            </select>
+            <button [disabled]="!selectedPostId" (click)="deletePost(+selectedPostId)" class="delete-btn">
+                Delete Selected Post
+            </button>
+        </div>
     </div>
-  </div>
 
-  <ng-template #noPosts>
-    <div class="no-posts-message">
-      <p>This user hasn't posted anything yet.</p>
+    <hr />
+
+    <div *ngIf="posts.length > 0; else noPosts">
+        <div class="post-item" *ngFor="let post of posts">
+            <div class="post-meta">
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.content }}</p>
+                <small>Visited: {{ post.country_name }} on {{ post.visit_date }}</small>
+            </div>
+        </div>
     </div>
-  </ng-template>
+
+    <ng-template #noPosts>
+        <div class="no-posts-message">
+            <p>This user hasn't posted anything yet.</p>
+        </div>
+    </ng-template>
 </div>

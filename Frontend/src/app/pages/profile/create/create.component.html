@@ -1,0 +1,27 @@
+<div>
+    <h3>Create New Blog Post</h3>
+    <form (ngSubmit)="createPost()" #postForm="ngForm" [ngClass]="{'disabled-form': isLoading}">
+        <label>Title:</label>
+        <input type="text" name="title" [(ngModel)]="newPost.title" required [disabled]="isLoading">
+
+        <label>Content:</label>
+        <textarea name="content" [(ngModel)]="newPost.content" required [disabled]="isLoading"></textarea>
+
+        <label>Country:</label>
+        <select name="country" [(ngModel)]="newPost.country" required [disabled]="isLoading">
+            <option value="" disabled selected *ngIf="!isLoading">Select a country</option>
+            <ng-container *ngIf="!isLoading">
+                <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+            </ng-container>
+        </select>
+
+        <label>Date of Visit:</label>
+        <input type="date" name="visitDate" [(ngModel)]="newPost.date" required [disabled]="isLoading">
+
+        <button type="submit" [disabled]="postForm.invalid || isLoading">Post</button>
+    </form>
+
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+    <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+    <p *ngIf="isLoading" class="loading">Loading countries...</p>
+</div>

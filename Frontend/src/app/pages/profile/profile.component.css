@@ -38,6 +38,27 @@
   font-size: 14px;
 }
 
+.create-post-btn {
+  display: block;
+  width: 200px;
+  margin: 0 auto 20px auto;
+  padding: 10px;
+  background-color: #274B59;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  pointer-events: auto; /* Ensure clickability */
+}
+
+.create-post-btn:hover {
+  background-color: #3F6973;
+}
+
 hr {
   border: none;
   border-top: 1px solid #A3A9B0;
@@ -93,3 +114,68 @@ hr {
   color: #A3A9B0;
   font-style: italic;
 }
+
+.delete-post-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.post-select {
+  flex: 1;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #A3A9B0;
+}
+
+.delete-btn {
+  background-color: #b53a3a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.delete-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+@media screen and (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .profile-info h2 {
+    font-size: 20px;
+  }
+
+  .profile-info p {
+    font-size: 12px;
+  }
+
+  .post-item {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .create-post-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+

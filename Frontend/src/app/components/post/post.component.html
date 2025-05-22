@@ -1,11 +1,14 @@
 <div class="post-card">
   <div class="post-user">
-    <img src="assets/user.jpeg" alt="User Avatar" class="avatar" />
+    <img src="assets/user.jpg" alt="User Avatar" class="avatar" />
     <div class="user-info">
       <span class="username">{{ post.username }}</span>
     </div>
+      <div *ngIf="currentUserId !== post.user_id">
+          <button *ngIf="!isFollowing" (click)="follow(post.user_id)">Follow</button>
+          <button *ngIf="isFollowing" (click)="unfollow(post.user_id)">Unfollow</button>
+      </div>
   </div>
-  <img [src]="getImageUrl(post)" alt="Post Image" class="post-image" />
   <h3>{{ post.title }}</h3>
   <p>{{ post.content | slice: 0:100 }}{{ post.content.length > 100 ? '...' : '' }}</p>
   <div class="post-stats">
@@ -13,7 +16,8 @@
     <span>Comments: {{ post.comments || 0 }}</span>
   </div>
   <div class="post-actions">
-    <button (click)="likePost(post.id)">Like</button>
-    <button (click)="commentOnPost(post.id)">Comment</button>
+      <button (click)="likePost(post.id)">Like</button>
+      <button (click)="unlikePost(post.id)">Unlike</button>
+      <button (click)="commentOnPost(post.id)">Comment</button>
   </div>
 </div>

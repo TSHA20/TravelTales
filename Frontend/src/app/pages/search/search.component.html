@@ -1,1 +1,27 @@
-<p>search works!</p>
+<div class="search-form">
+  <h2>Search Posts</h2>
+
+  <form (ngSubmit)="search()">
+
+    <label>Country:</label>
+    <select [(ngModel)]="country" name="country">
+      <option value="">-- All Countries --</option>
+      <option *ngFor="let c of countries" [value]="c">{{ c }}</option>
+    </select>
+
+    <label>Username:</label>
+    <input [(ngModel)]="username" name="username" placeholder="e.g. testuser" />
+
+    <button type="submit">Search</button>
+    <button type="button" (click)="clear()">Clear</button>
+  </form>
+</div>
+
+<hr />
+
+<div *ngIf="isLoading">Loading posts...</div>
+
+<div *ngIf="!isLoading && posts.length" class="status-message">
+  <app-post *ngFor="let post of posts" [post]="post"></app-post>
+</div>
+<div *ngIf="noResults" class="status-message">No posts found.</div>
