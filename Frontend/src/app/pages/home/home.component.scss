@@ -22,7 +22,7 @@ $accent-text: #59290C; // Dark brown
 
 .left-sidebar,
 .right-sidebar {
-  width: 20%;
+  width: 15%; // Reduced from 20%
   background-color: $accent-bg;
   padding: 20px;
   border-radius: 12px;
@@ -30,7 +30,7 @@ $accent-text: #59290C; // Dark brown
 }
 
 .main-feed {
-  width: 55%;
+  width: 65%; // Increased from 55% to balance the layout
   padding: 25px;
   background-color: $main-feed;
   border-radius: 12px;
@@ -95,7 +95,6 @@ $accent-text: #59290C; // Dark brown
   gap: 16px;
   margin-bottom: 30px;
 }
-
 
 .user-card {
   text-align: center;

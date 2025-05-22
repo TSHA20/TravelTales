@@ -15,7 +15,7 @@
 .post-user {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between; /* space between avatar/info and buttons */
   margin-bottom: 12px;
 }
 
@@ -27,10 +27,40 @@
   border: 2px solid #E07A5F;
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .username {
   font-weight: 600;
   color: #274B59;
   font-size: 15px;
+}
+
+/* FOLLOW BUTTONS */
+.post-user button {
+  padding: 5px 10px;
+  font-size: 13px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.post-user button:hover {
+  opacity: 0.9;
+}
+
+.post-user button:nth-child(1) {
+  background-color: #274B59;
+  color: #fff;
+}
+
+.post-user button:nth-child(2) {
+  background-color: #E07A5F;
+  color: #fff;
 }
 
 /* POST IMAGE */
@@ -96,3 +126,4 @@
 .post-actions button:hover {
   background-color: #1b3441;
 }
+

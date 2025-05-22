@@ -1,0 +1,83 @@
+.search-form {
+  max-width: 600px;
+  margin: 40px auto 20px;
+  padding: 20px;
+  background-color: #EBECED;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-form h2 {
+  text-align: center;
+  color: #274B59;
+  margin-bottom: 20px;
+}
+
+.search-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.search-form label {
+  font-weight: 600;
+  color: #274B59;
+}
+
+.search-form input {
+  padding: 10px;
+  border: 1px solid #A3A9B0;
+  border-radius: 6px;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.search-form button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+}
+
+.search-form button[type="submit"] {
+  background-color: #274B59;
+  color: white;
+}
+
+.search-form button[type="submit"]:hover {
+  background-color: #3F6973;
+}
+
+.search-form button[type="button"] {
+  background-color: #ccc;
+  color: #333;
+}
+
+.search-form button[type="button"]:hover {
+  background-color: #bbb;
+}
+
+/* Loading and No Results */
+.status-message {
+  text-align: center;
+  color: #3F6973;
+  margin-top: 30px;
+  font-style: italic;
+}
+
+/* Optional: spacing under each result */
+app-post {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.search-form select {
+  padding: 10px;
+  border: 1px solid #A3A9B0;
+  border-radius: 6px;
+  font-size: 16px;
+  font-family: inherit;
+}
