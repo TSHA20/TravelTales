@@ -10,14 +10,15 @@ import { FeedComponent } from './pages/feed/feed.component';
 import {CountryComponent } from "./components/country-dropdown/country.component";
 
 export const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'search', component: SearchComponent },
-  { path: 'country', component: CountryComponent },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'search', component: SearchComponent, canActivate: [AuthGuard] },
+  { path: 'country', component: CountryComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: '**', redirectTo: '/home' }
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
+  // { path: 'feed', component: FeedComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '**', redirectTo: '/login' }
 ];
 
 @NgModule({

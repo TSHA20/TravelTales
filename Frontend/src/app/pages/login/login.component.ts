@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
+  standalone: true,
   imports: [CommonModule, FormsModule]
 })
 export class LoginComponent {
@@ -18,13 +19,13 @@ export class LoginComponent {
 
   login() {
     this.authService.login(this.credentials.email, this.credentials.password).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         console.log('Login response:', res);
-        localStorage.setItem('token', res.token);
-        this.router.navigate(['/feed']);
+        this.authService.loginSuccess();
+        this.router.navigate(['/home']);
       },
       error: (err) => {
-        this.errorMessage = 'Login failed: ' + (err.error?.message || 'Unknown error');
+        this.errorMessage = err.error?.error || 'Login failed';
       }
     });
   }
