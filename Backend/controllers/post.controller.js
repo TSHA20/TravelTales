@@ -123,6 +123,7 @@ exports.commentOnPost = (req, res) => {
     'INSERT INTO post_comments (post_id, user_id, comment) VALUES (?, ?, ?)',
     [postId, userId, comment],
     function (err) {
+      console.error('[commentOnPost] DB Error:', err);
       if (err) return res.status(500).json({ error: 'Failed to comment' });
       res.json({ success: true, message: 'Comment added' });
     }
