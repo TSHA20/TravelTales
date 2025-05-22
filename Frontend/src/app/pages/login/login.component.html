@@ -11,5 +11,5 @@
     <button type="submit">Login</button>
     <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
   </form>
-  <p>Don't have an account? <a routerLink="/register">Register</a></p>
+    <p>Don't have an account? <a [routerLink]="['/register']">Register</a></p>
 </div>

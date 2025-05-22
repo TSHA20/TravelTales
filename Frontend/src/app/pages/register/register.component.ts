@@ -22,7 +22,7 @@ export class RegisterComponent {
 
   onSubmit() {
     const userData = { username: this.username, email: this.email, password: this.password };
-    this.http.post(`${environment.apiUrl}/user/register`, userData).subscribe({
+    this.http.post(`${environment.apiUrl}/auth/register`, userData).subscribe({
       next: (response: any) => {
         alert(response.message);
         this.router.navigate(['/login']);
