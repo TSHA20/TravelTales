@@ -27,9 +27,25 @@
     <div *ngIf="posts.length > 0; else noPosts">
         <div class="post-item" *ngFor="let post of posts">
             <div class="post-meta">
-                <h3>{{ post.title }}</h3>
-                <p>{{ post.content }}</p>
-                <small>Visited: {{ post.country_name }} on {{ post.visit_date }}</small>
+                <ng-container *ngIf="editingPostId === post.id; else readMode">
+                    <form (ngSubmit)="submitEdit(post.id)">
+                        <input [(ngModel)]="editForm.title" name="title" required placeholder="Title" />
+                        <textarea [(ngModel)]="editForm.content" name="content" required placeholder="Content"></textarea>
+                        <input [(ngModel)]="editForm.country_name" name="country_name" required placeholder="Country" />
+                        <input type="date" [(ngModel)]="editForm.visit_date" name="visit_date" required />
+
+                        <button type="submit">Save</button>
+                        <button type="button" (click)="cancelEdit()">Cancel</button>
+                    </form>
+                </ng-container>
+
+                <ng-template #readMode>
+                    <h3>{{ post.title }}</h3>
+                    <p>{{ post.content }}</p>
+                    <small>Visited: {{ post.country_name }} on {{ post.visit_date }}</small>
+                    <br />
+                    <button (click)="startEdit(post)">Edit</button>
+                </ng-template>
             </div>
         </div>
     </div>
