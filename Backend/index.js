@@ -6,6 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const userRoutes = require('./routes/user.routes');
 const postRoutes = require('./routes/post.routes');
+const followRoutes = require('./routes/follow.routes');
+
 let countryRoutes;
 const cookieParser = require('cookie-parser');
 
@@ -64,6 +66,7 @@ initDb();
 app.use('/api/auth', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/countries', countryRoutes);
+app.use('/api/social', followRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
