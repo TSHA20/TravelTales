@@ -16,6 +16,13 @@ export class ProfileComponent implements OnInit {
   user: any = {};
   posts: any[] = [];
   selectedPostId: number | '' = '';
+  editingPostId: number | null = null;
+  editForm = {
+    title: '',
+    content: '',
+    country_name: '',
+    visit_date: ''
+  };
 
   constructor(private http: HttpClient) {}
 
@@ -80,4 +87,38 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+  startEdit(post: any): void {
+    this.editingPostId = post.id;
+    this.editForm = {
+      title: post.title,
+      content: post.content,
+      country_name: post.country_name,
+      visit_date: post.visit_date
+    };
+  }
+
+  cancelEdit(): void {
+    this.editingPostId = null;
+    this.editForm = { title: '', content: '', country_name: '', visit_date: '' };
+  }
+
+  submitEdit(postId: number): void {
+    const csrfToken = this.getCsrfToken();
+
+    this.http.put(`${environment.apiUrl}/posts/${postId}`, this.editForm, {
+      withCredentials: true,
+      headers: { 'x-csrf-token': csrfToken }
+    }).subscribe({
+      next: () => {
+        alert('Post updated!');
+        this.editingPostId = null;
+        this.loadUserPosts(); // reload updated posts
+      },
+      error: (err) => {
+        console.error('Failed to update post:', err);
+        alert('Update failed.');
+      }
+    });
+  }
+
 }

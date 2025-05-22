@@ -147,6 +147,61 @@ hr {
   cursor: not-allowed;
 }
 
+/* EDIT / SAVE / CANCEL BUTTONS */
+.post-meta button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: 600;
+}
+
+
+.post-meta button:hover {
+  opacity: 0.9;
+}
+
+.post-meta form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.post-meta input[type="text"],
+.post-meta input[type="date"],
+.post-meta textarea {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
+}
+
+/* Edit Button */
+.post-meta button:nth-of-type(1) {
+  background-color: #274B59;
+  color: white;
+}
+
+/* Save Button */
+.post-meta button[type="submit"] {
+  background-color: #2E8B57; /* green */
+  color: white;
+}
+
+/* Cancel Button */
+.post-meta button[type="button"] {
+  background-color: #bbb;
+  color: #333;
+}
+
 @media screen and (max-width: 768px) {
   .profile-header {
     flex-direction: column;
